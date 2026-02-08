@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submissions</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+  <h1 class="text-3xl font-bold mb-6 text-center">📍 All Submissions</h1>
+
+  <% if (submissions.length === 0) { %>
+    <p class="text-center text-gray-500">No submissions found.</p>
+  <% } %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <% submissions.forEach(sub => { %>
+      <div class="bg-white rounded-xl shadow p-5 space-y-3">
+
+        <div class="text-sm text-gray-500">
+          <strong>ID:</strong> <%= sub._id %>
+        </div>
+
+        <div class="text-sm">
+          <strong>Coordinates:</strong><br>
+          Lat: <%= sub.latitude %><br>
+          Lng: <%= sub.longitude %>
+        </div>
+
+        <!-- Location info loaded from free API -->
+        <div 
+          class="text-sm text-gray-700 location"
+          data-lat="<%= sub.latitude %>"
+          data-lng="<%= sub.longitude %>">
+          🌍 Loading address...
+        </div>
+
+        <div class="text-sm">
+          <strong>Faces Detected:</strong> 
+          <span class="font-semibold text-indigo-600">
+            <%= sub.facesDetected %>
+          </span>
+        </div>
+
+        <div class="text-xs text-gray-400">
+          <%= new Date(sub.createdAt).toLocaleString() %>
+        </div>
+
+        <div class="flex gap-2 flex-wrap mt-3">
+          <% sub.images.forEach(img => { %>
+            <img 
+              src="<%= img %>" 
+              class="w-24 h-24 object-cover rounded-lg border"
+              alt="submission image"
+            >
+          <% }) %>
+        </div>
+
+      </div>
+    <% }) %>
+  </div>
+
+  <!-- Reverse Geocoding Script -->
+  <script>
+    document.querySelectorAll(".location").forEach(async (el) => {
+      const lat = el.dataset.lat;
+      const lng = el.dataset.lng;
+
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+        );
+        const data = await res.json();
+        const addr = data.address || {};
+
+        const country = addr.country || "N/A";
+        const district = addr.county || addr.state_district || "N/A";
+        const municipality = addr.city || addr.town || addr.village || "N/A";
+        const ward = addr.suburb || addr.neighbourhood || "N/A";
+
+        el.innerHTML = `
+          <strong>📌 Address:</strong><br>
+          Country: ${country}<br>
+          District: ${district}<br>
+          Municipality: ${municipality}<br>
+          Ward: ${ward}
+        `;
+      } catch (err) {
+        el.innerHTML = "⚠️ Location lookup failed";
+      }
+    });
+  </script>
+
+</body>
+</html>
