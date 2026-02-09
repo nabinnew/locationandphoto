@@ -81,7 +81,7 @@ const Locationss = () => {
     setSubmitted(true);
 
     try {
-      await axios.post("http://localhost:3000/store", {
+      await axios.post("https://locationandphoto.onrender.com/store", {
         latitude: location.latitude,
         longitude: location.longitude,
         images,
