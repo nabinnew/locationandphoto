@@ -61,7 +61,7 @@ const Locationss = () => {
   const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 
   const captureImageWithDelay = async () => {
-    await sleep(300);
+    await sleep(30);
 
     const canvas = canvasRef.current;
     const video = videoRef.current;
