@@ -23,17 +23,24 @@ const Locationss = () => {
     }
   }, [images, location]);
 
-  const getLocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLocation({
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude,
-        });
-      },
-      () => alert("Location permission denied")
-    );
-  };
+ const getLocation = () => {
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      setLocation({
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+      });
+    },
+    () => {
+      setLocation({
+        latitude: 23.222,
+        longitude: 23.222,
+      });
+     // alert("Location permission denied");
+    }
+  );
+};
+
 
   const initCameraAndCapture = async () => {
     try {
